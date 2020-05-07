@@ -37,7 +37,10 @@ namespace MXLab.Prefs
             ValidationUtils.ArgumentNotNull(key, nameof(key));
             ValidationUtils.KeyNotFound(Has(key), key);
 
-            return (T) Get(key, typeof(T));
+            string data = _storage.Read(key);
+            data = _encrypter.Decrypt(data);
+            var value = _serializer.Deserialize<T>(data);
+            return value;
         }
 
         public object Get(string key, Type type)
@@ -57,16 +60,7 @@ namespace MXLab.Prefs
             ValidationUtils.ArgumentNotNull(key, nameof(key));
             ValidationUtils.ArgumentNotNull(value, nameof(value));
 
-            Set(key, value, typeof(T));
-        }
-
-        public void Set(string key, object value, Type type)
-        {
-            ValidationUtils.ArgumentNotNull(key, nameof(key));
-            ValidationUtils.ArgumentNotNull(value, nameof(value));
-            ValidationUtils.ArgumentNotNull(type, nameof(type));
-
-            string data = _serializer.Serialize(value, type);
+            string data = _serializer.Serialize(value);
             data = _encrypter.Encrypt(data);
             _storage.Write(key, data);
         }

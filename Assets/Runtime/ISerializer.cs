@@ -9,9 +9,16 @@ namespace MXLab.Prefs
         /// <summary>
         /// </summary>
         /// <param name="value"></param>
-        /// <param name="type"></param>
+        /// <typeparam name="T"></typeparam>
         /// <returns></returns>
-        string Serialize(object value, Type type);
+        string Serialize<T>(T value);
+
+        /// <summary>
+        /// </summary>
+        /// <param name="data"></param>
+        /// <typeparam name="T"></typeparam>
+        /// <returns></returns>
+        T Deserialize<T>(string data);
 
         /// <summary>
         /// </summary>

@@ -36,13 +36,6 @@ namespace MXLab.Prefs
         /// <summary>
         /// </summary>
         /// <param name="key"></param>
-        /// <param name="value"></param>
-        /// <param name="type"></param>
-        void Set(string key, object value, Type type);
-
-        /// <summary>
-        /// </summary>
-        /// <param name="key"></param>
         void Delete(string key);
     }
 }

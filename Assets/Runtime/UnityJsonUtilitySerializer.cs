@@ -6,15 +6,25 @@ namespace MXLab.Prefs
 {
     public class UnityJsonUtilitySerializer : ISerializer
     {
-        public string Serialize(object value, Type type)
+        public string Serialize<T>(T value)
         {
             ValidationUtils.ArgumentNotNull(value, nameof(value));
-            ValidationUtils.ArgumentNotNull(type, nameof(type));
 
-            Type dataType = typeof(Data<>).MakeGenericType(type);
-            object obj = Activator.CreateInstance(dataType, value, type);
-            string json = JsonUtility.ToJson(obj);
+            var data = new Data<T>(value);
+            string json = JsonUtility.ToJson(data);
+
             return json;
+        }
+
+        public T Deserialize<T>(string data)
+        {
+            ValidationUtils.ArgumentNotNull(data, nameof(data));
+
+            var result = JsonUtility.FromJson<Data<T>>(data);
+
+            ValidationUtils.ArgumentWrongType(result.Type != typeof(T).FullName, nameof(T));
+
+            return result.Value;
         }
 
         public object Deserialize(string data, Type type)
@@ -22,17 +32,17 @@ namespace MXLab.Prefs
             ValidationUtils.ArgumentNotNull(data, nameof(data));
             ValidationUtils.ArgumentNotNull(type, nameof(type));
 
-            Type dataType = typeof(Data<>).MakeGenericType(type);
-            var result = (IData) JsonUtility.FromJson(data, dataType);
+            Type genericDataType = typeof(Data<>).MakeGenericType(type);
+            var result = (IData) JsonUtility.FromJson(data, genericDataType);
 
             ValidationUtils.ArgumentWrongType(result.Type != type.FullName, nameof(type));
 
-            return result.Value;
+            return result.ObjValue;
         }
 
         private interface IData
         {
-            object Value { get; }
+            object ObjValue { get; }
             string Type { get; }
         }
 
@@ -45,13 +55,14 @@ namespace MXLab.Prefs
             [SerializeField]
             private string _type;
 
-            public Data(T value, Type type)
+            public Data(T value)
             {
                 _value = value;
-                _type = type.FullName;
+                _type = value.GetType().FullName;
             }
 
-            public object Value => _value;
+            public T Value => _value;
+            public object ObjValue => _value;
             public string Type => _type;
         }
     }
