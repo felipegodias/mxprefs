@@ -7,20 +7,20 @@ namespace MXLab.Prefs.Internal
     internal static class ValidationUtils
     {
         [Conditional("DEBUG")]
-        public static void NullArgument(object value, string argName)
+        public static void ArgumentNotNull(object value, string argName)
         {
             if (value == null)
             {
-                throw new ArgumentNullException(argName, string.Format(ErrorMsg.NullArgumentExceptionFormat, argName));
+                throw new ArgumentNullException(argName, ErrorMsg.ArgumentNullExceptionMsg);
             }
         }
 
         [Conditional("DEBUG")]
-        public static void WrongTypeArgument(bool isWrongType, string argName)
+        public static void ArgumentWrongType(bool isWrongType, string argName)
         {
             if (isWrongType)
             {
-                throw new ArgumentException(string.Format(ErrorMsg.WrongTypeArgumentExceptionFormat, argName), argName);
+                throw new ArgumentException(ErrorMsg.ArgumentWrongTypeExceptionMsg, argName);
             }
         }
 
@@ -29,7 +29,7 @@ namespace MXLab.Prefs.Internal
         {
             if (!hasKey)
             {
-                throw new KeyNotFoundException(string.Format(ErrorMsg.KeyNotFoundExceptionFormat, value));
+                throw new KeyNotFoundException(string.Format(ErrorMsg.KeyNotFoundExceptionMsg, value));
             }
         }
     }

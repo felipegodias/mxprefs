@@ -7,7 +7,7 @@ namespace MXLab.Prefs
     {
         public bool Exists(string entry)
         {
-            ValidationUtils.NullArgument(entry, nameof(entry));
+            ValidationUtils.ArgumentNotNull(entry, nameof(entry));
 
             string key = MountKey(entry);
             bool hasKey = PlayerPrefs.HasKey(key);
@@ -16,7 +16,7 @@ namespace MXLab.Prefs
 
         public string Read(string entry)
         {
-            ValidationUtils.NullArgument(entry, nameof(entry));
+            ValidationUtils.ArgumentNotNull(entry, nameof(entry));
 
             string key = MountKey(entry);
             string value = PlayerPrefs.GetString(key);
@@ -25,8 +25,8 @@ namespace MXLab.Prefs
 
         public void Write(string entry, string data)
         {
-            ValidationUtils.NullArgument(entry, nameof(entry));
-            ValidationUtils.NullArgument(data, nameof(data));
+            ValidationUtils.ArgumentNotNull(entry, nameof(entry));
+            ValidationUtils.ArgumentNotNull(data, nameof(data));
 
             string key = MountKey(entry);
             PlayerPrefs.SetString(key, data);
@@ -34,7 +34,7 @@ namespace MXLab.Prefs
 
         public void Delete(string entry)
         {
-            ValidationUtils.NullArgument(entry, nameof(entry));
+            ValidationUtils.ArgumentNotNull(entry, nameof(entry));
 
             string key = MountKey(entry);
             PlayerPrefs.DeleteKey(key);

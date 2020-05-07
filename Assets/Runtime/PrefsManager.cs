@@ -5,19 +5,20 @@ namespace MXLab.Prefs
 {
     public class PrefsManager : IPrefsManager
     {
+        private readonly IStorage _storage;
         private readonly IEncrypter _encrypter;
         private readonly ISerializer _serializer;
-        private readonly IStorage _storage;
 
-        public PrefsManager() : this(new UnityPlayerPrefsStorage(), new DefaultEncrypter(), new UnityJsonUtilitySerializer())
+        public PrefsManager() : this(new UnityPlayerPrefsStorage(), new DummyEncrypter(),
+            new UnityJsonUtilitySerializer())
         {
         }
 
         public PrefsManager(IStorage storage, IEncrypter encrypter, ISerializer serializer)
         {
-            ValidationUtils.NullArgument(storage, nameof(storage));
-            ValidationUtils.NullArgument(encrypter, nameof(encrypter));
-            ValidationUtils.NullArgument(serializer, nameof(serializer));
+            ValidationUtils.ArgumentNotNull(storage, nameof(storage));
+            ValidationUtils.ArgumentNotNull(encrypter, nameof(encrypter));
+            ValidationUtils.ArgumentNotNull(serializer, nameof(serializer));
 
             _storage = storage;
             _encrypter = encrypter;
@@ -26,14 +27,14 @@ namespace MXLab.Prefs
 
         public bool Has(string key)
         {
-            ValidationUtils.NullArgument(key, nameof(key));
+            ValidationUtils.ArgumentNotNull(key, nameof(key));
 
             return _storage.Exists(key);
         }
 
         public T Get<T>(string key)
         {
-            ValidationUtils.NullArgument(key, nameof(key));
+            ValidationUtils.ArgumentNotNull(key, nameof(key));
             ValidationUtils.KeyNotFound(Has(key), key);
 
             return (T) Get(key, typeof(T));
@@ -41,8 +42,8 @@ namespace MXLab.Prefs
 
         public object Get(string key, Type type)
         {
-            ValidationUtils.NullArgument(key, nameof(key));
-            ValidationUtils.NullArgument(type, nameof(type));
+            ValidationUtils.ArgumentNotNull(key, nameof(key));
+            ValidationUtils.ArgumentNotNull(type, nameof(type));
             ValidationUtils.KeyNotFound(Has(key), key);
 
             string data = _storage.Read(key);
@@ -53,17 +54,17 @@ namespace MXLab.Prefs
 
         public void Set<T>(string key, T value)
         {
-            ValidationUtils.NullArgument(key, nameof(key));
-            ValidationUtils.NullArgument(value, nameof(value));
+            ValidationUtils.ArgumentNotNull(key, nameof(key));
+            ValidationUtils.ArgumentNotNull(value, nameof(value));
 
             Set(key, value, typeof(T));
         }
 
         public void Set(string key, object value, Type type)
         {
-            ValidationUtils.NullArgument(key, nameof(key));
-            ValidationUtils.NullArgument(value, nameof(value));
-            ValidationUtils.NullArgument(type, nameof(type));
+            ValidationUtils.ArgumentNotNull(key, nameof(key));
+            ValidationUtils.ArgumentNotNull(value, nameof(value));
+            ValidationUtils.ArgumentNotNull(type, nameof(type));
 
             string data = _serializer.Serialize(value, type);
             data = _encrypter.Encrypt(data);
@@ -72,7 +73,7 @@ namespace MXLab.Prefs
 
         public void Delete(string key)
         {
-            ValidationUtils.NullArgument(key, nameof(key));
+            ValidationUtils.ArgumentNotNull(key, nameof(key));
             ValidationUtils.KeyNotFound(Has(key), key);
 
             _storage.Delete(key);
